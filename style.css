@@ -173,42 +173,54 @@ x
   }
 
   .sidebar {
-    width: 80%;
+    width: 100%;
     height: auto;
-    flex-direction: row;
-    align-items: center;
+    position: relative;
     padding: 10px;
-    overflow-x: auto;
-  }
-
-  .top {
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
     overflow: visible;
   }
 
-  .identity {
-    display: none; /* optionnel mais recommandé */
+  .top {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
+  /* identité compacte mais visible */
+  .identity {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* recherche full width */
+  #search {
+    width: 100%;
+  }
+
+  /* sections verticales (IMPORTANT) */
   .section {
     display: flex;
-    flex-direction: row;
-    gap: 10px;
+    flex-direction: column;
+    gap: 6px;
   }
 
   .col {
-    flex-direction: row;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
-  #search {
-    width: 140px;
-    font-size: 0.8rem;
+  /* boutons pleine largeur */
+  button {
+    width: 100%;
+    text-align: left;
   }
 
   .bottom {
-    display: none; /* CV caché ou déplacé */
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
   }
 
   main {
