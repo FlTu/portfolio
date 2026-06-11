@@ -1,4 +1,4 @@
-const state = {
+state = {
   mode: "all",
   view: "skills",
   search: "",

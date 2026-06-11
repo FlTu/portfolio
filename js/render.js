@@ -72,24 +72,45 @@ function renderExperiences(state) {
       const card = document.createElement("div");
       card.className = "card" + (open ? " open" : "");
 
-      card.innerHTML = `
-        <div class="title">${exp.title}</div>
-        <div class="small">${exp.period}</div>
-        <div>${exp.summary}</div>
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = exp.title;
 
-        <button onclick="toggleExp('${exp.id}')">
-          ${open ? "Réduire" : "Détails"}
-        </button>
+      const period = document.createElement("div");
+      period.className = "small";
+      period.textContent = exp.period;
 
-        <div class="expand">
-          ${exp.details}
-        </div>
-      `;
+      const summary = document.createElement("div");
+      summary.textContent = exp.summary;
+
+      const btn = document.createElement("button");
+      btn.textContent = open ? "Réduire" : "Voir plus";
+      btn.onclick = () => toggleExp(exp.id);
+
+      const details = document.createElement("div");
+      details.className = "expand";
+	details.innerHTML = (exp.details || "").replace(/\n/g, "<br>");
+      const skillsBlock = document.createElement("div");
+      skillsBlock.className = "skill-grid-mini";
+
+      (exp.skills || []).forEach(s => {
+        const tag = document.createElement("span");
+        tag.className = "skill-mini";
+        tag.textContent = s;
+        skillsBlock.appendChild(tag);
+      });
+
+      card.appendChild(title);
+      card.appendChild(period);
+      card.appendChild(summary);
+        card.appendChild(details);
+        card.appendChild(skillsBlock);
+      card.appendChild(btn);
+
 
       root.appendChild(card);
     });
 }
-
 /* ---------------- PROJECTS ---------------- */
 
 function renderProjects(state) {
@@ -100,32 +121,59 @@ function renderProjects(state) {
     .filter(p => matchesMode(p, state) && matchesSearch(p, state))
     .forEach(proj => {
 
-      const open = state.expandedProj[proj.id];
 
-      const card = document.createElement("div");
-      card.className = "card" + (open ? " open" : "");
 
-      card.innerHTML = `
-        <div class="title">${proj.title}</div>
-        <div>${proj.summary}</div>
 
-        <button onclick="toggleProj('${proj.id}')">
-          ${open ? "Réduire" : "Détails"}
-        </button>
+	const open = state.expandedProj[proj.id];
 
-        <div class="expand">
-          ${proj.details}
-        </div>
-      `;
+	const card = document.createElement("div");
+	card.className = "card" + (open ? " open" : "");
 
-      root.appendChild(card);
+
+	
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = proj.title;
+
+      const summary = document.createElement("div");
+      summary.textContent = proj.summary;
+
+      const btn = document.createElement("button");
+      btn.textContent = open ? "Réduire" : "Voir plus";
+      btn.onclick = () => toggleProj(proj.id);
+
+      const details = document.createElement("div");
+      details.className = "expand";
+	details.innerHTML = (proj.details || "").replace(/\n/g, "<br>");
+      const skillsBlock = document.createElement("div");
+      skillsBlock.className = "skill-grid-mini";
+
+      (proj.skills || []).forEach(s => {
+        const tag = document.createElement("span");
+        tag.className = "skill-mini";
+        tag.textContent = s;
+        skillsBlock.appendChild(tag);
+      });
+
+      card.appendChild(title);
+      card.appendChild(summary);
+        card.appendChild(details);
+        card.appendChild(skillsBlock);
+      card.appendChild(btn);
+
+
+	root.appendChild(card);
     });
 }
 /* ---------------- ROUTER ---------------- */
 
 function render(state) {
 
+  const root = document.getElementById("content");
+  root.innerHTML = "";
+
   switch (state.view) {
+
     case "skills":
       renderSkills(state);
       break;
@@ -137,7 +185,87 @@ function render(state) {
     case "projects":
       renderProjects(state);
       break;
-  }
 
-  updateSidebarState();
+    case "overview":
+      renderOverview(state);
+      break;
+  }
+}
+
+
+function renderOverview(state) {
+
+  const root = document.getElementById("content");
+
+  // EXPERIENCES
+  const expSection = document.createElement("div");
+  expSection.innerHTML = `<h2>Expériences</h2>`;
+
+  DATA.experiences
+    .filter(e => matchesMode(e, state))
+    .forEach(exp => {
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const title = document.createElement("div");
+      title.textContent = exp.title;
+
+      const summary = document.createElement("div");
+      summary.textContent = exp.summary;
+
+      // skills associés (IMPORTANT)
+      const skills = document.createElement("div");
+      skills.className = "skill-grid-mini";
+
+      (exp.skills || []).forEach(s => {
+        const tag = document.createElement("span");
+        tag.className = "skill-mini";
+        tag.textContent = s;
+        skills.appendChild(tag);
+      });
+
+      card.appendChild(title);
+      card.appendChild(summary);
+      card.appendChild(skills);
+
+      expSection.appendChild(card);
+    });
+
+  // PROJECTS
+  const projSection = document.createElement("div");
+  projSection.innerHTML = `<h2>Projets</h2>`;
+
+  DATA.projects
+    .filter(p => matchesMode(p, state))
+    .forEach(proj => {
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const title = document.createElement("div");
+      title.textContent = proj.title;
+
+      const summary = document.createElement("div");
+      summary.textContent = proj.summary;
+
+      const skills = document.createElement("div");
+      skills.className = "skill-grid-mini";
+
+      (proj.skills || []).forEach(s => {
+        const tag = document.createElement("span");
+        tag.className = "skill-mini";
+        tag.textContent = s;
+        skills.appendChild(tag);
+      });
+
+      card.appendChild(title);
+      card.appendChild(summary);
+      card.appendChild(skills);
+
+      projSection.appendChild(card);
+    });
+
+  root.appendChild(expSection);
+  root.appendChild(projSection);
 }

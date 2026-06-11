@@ -227,3 +227,48 @@ x
     padding: 12px;
   }
 }
+
+
+.section-title {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.section-title:hover {
+  color: #ff6a00;
+}
+
+
+.skill-grid-mini {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.skill-mini {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border: 1px solid #2a2d3a;
+  border-radius: 4px;
+  color: #aaa;
+}
+
+
+
+.expand,
+.skill-grid-mini {
+  display: none;
+}
+
+.card.open .expand,
+.card.open .skill-grid-mini {
+  display: block;
+}

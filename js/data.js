@@ -41,52 +41,59 @@ const DATA = {
 
   experiences: [
     {
-      id: "exp1",
-      title: "Ingénieur logiciel embarqué C/C++ – Secteur Défense",
+	id: "exp1",
+	title: "Ingénieur logiciel embarqué C/C++ – Secteur Défense",
 	period: "2018 - 2022 (5 ans)",
-      summary: "Systèmes critiques embarqués",
+	summary: "Systèmes critiques embarqués",
 	modes: ["linux","dev"],
-      details: "- Développement logiciel embarqué critique en C/C++<br>- Intégration sur systèmes Linux embarqués<br>- Debug bas niveau et analyse système<br>- Optimisation performance et robustesse<br>- Collaboration équipes hardware et système<br>- Gestion d’équipe (3 personnes)"
+	details: "- Développement logiciel embarqué critique en C/C++<br>- Intégration sur systèmes Linux embarqués<br>- Debug bas niveau et analyse système<br>- Optimisation performance et robustesse<br>- Collaboration équipes hardware et système<br>- Gestion d’équipe (3 personnes)",
+	skills: ["C", "C++", "Linux"]
     },
     {
-      id: "exp2",
-      title: "Ingénieur développement logiciel C++ – Plateforme de gestion de données distribuées",
+	id: "exp2",
+	title: "Ingénieur développement logiciel C++ – Plateforme de gestion de données distribuées",
 	period: "2022 - 2023 (18 mois)",
-      summary: "Architecture distribuée",
+	summary: "Architecture distribuée",
 	modes: ["linux", "dev"],
-      details: "- Développement C++ d’une plateforme de gestion et synchronisation de données distribuées<br>- Réplication temps réel multi-serveurs<br>- Traitement et validation de données (SQLite)<br>- Migration Windows → Linux<br>- Intégration et déploiement sur IBM i (AS/400)"
+	details: "- Développement C++ d’une plateforme de gestion et synchronisation de données distribuées<br>- Réplication temps réel multi-serveurs<br>- Traitement et validation de données (SQLite)<br>- Migration Windows → Linux<br>- Intégration et déploiement sur IBM i (AS/400)",
+	skills: ["C", "C++", "Linux"]
     },
     {
-      id: "exp3",
-      title: "Fondateur – Conception hardware et système informatique",
-      period: "2024–2026 (2 ans)",
-      summary: "Hardware + CAO",
+	id: "exp3",
+	title: "Fondateur – Conception hardware et système informatique",
+	period: "2024–2026 (2 ans)",
+	summary: "Hardware + CAO",
 	modes: ["linux", "3d"],
-	details: "Conception et développement d’un système informatique complet orienté hardware (ordinateur portable sur mesure).<br>Travail sur l’architecture matérielle, le choix des composants et la conception système.<br>Prototypage et validation via CAO (FreeCAD) et impression 3D (Prusa XL).<br>Veille technologique et définition des choix techniques."
+	details: "Conception et développement d’un système informatique complet orienté hardware (ordinateur portable sur mesure).<br>Travail sur l’architecture matérielle, le choix des composants et la conception système.<br>Prototypage et validation via CAO (FreeCAD) et impression 3D (Prusa XL).<br>Veille technologique et définition des choix techniques.",
+	skills: ["C", "C++", "Linux"]
+
     }
   ],
 
   projects: [
     {
-      id: "p1",
-      title: "Laptop modulaire",
-      summary: "Projet hardware",
-      modes: ["3d"],
-      details: "CAO + architecture modulaire."
+	id: "p1",
+	title: "Laptop modulaire",
+	summary: "Projet hardware",
+	modes: ["3d"],
+	details: "CAO + architecture modulaire.",
+	skills: ["C", "C++", "Linux"]
     },
     {
-      id: "p2",
-      title: "Plateforme C++ distribuée",
-      summary: "Système distribué",
-      modes: ["dev"],
-      details: "Réseau + SQLite + performance."
+	id: "p2",
+	title: "Plateforme C++ distribuée",
+	summary: "Système distribué",
+	modes: ["dev"],
+	details: "Réseau + SQLite + performance.",
+	skills: ["C", "C++", "Linux"]
     },
     {
-      id: "p3",
-      title: "Infrastructure Linux",
-      summary: "Homelab avancé",
-      modes: ["linux"],
-      details: "Containers + automation."
+	id: "p3",
+	title: "Infrastructure Linux",
+	summary: "Homelab avancé",
+	modes: ["linux"],
+	details: "Containers + automation.",
+	skills: ["C", "C++", "Linux"]
     }
   ]
 };
