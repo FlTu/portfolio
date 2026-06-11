@@ -15,41 +15,44 @@
 <aside class="sidebar">
 
   <div class="title">Florent Turri</div>
-  <div class="muted">System Engineer</div>
+  <div class="muted">Ingénieur logiciel embarqué</div>
 
-  <div class="section-title">Module d’intention</div>
-
+  <div class="section-title">Mode</div>
   <div class="mode">
     <button id="btn-dev" class="mode-btn active" onclick="setMode('dev')">Dev</button>
     <button id="btn-linux" class="mode-btn" onclick="setMode('linux')">Linux</button>
     <button id="btn-3d" class="mode-btn" onclick="setMode('3d')">3D</button>
   </div>
 
-  <div class="section-title">Compétences</div>
+  <div class="section-title">Navigation</div>
 
-  <input id="search" placeholder="Rechercher..." oninput="renderSkills()" />
+  <button onclick="selectView('skills')">Compétences</button>
 
-  <div id="skills"></div>
+  <div class="section-title" onclick="toggleSection('exp-all')">
+    Expériences (toggle)
+  </div>
+
+  <button onclick="selectView('exp-defense')">Défense</button>
+  <button onclick="selectView('exp-data')">Plateforme distribuée</button>
+  <button onclick="selectView('exp-fondateur')">Fondateur hardware</button>
+
+  <div class="section-title" onclick="toggleSection('proj-all')">
+    Projets (toggle)
+  </div>
+
+  <button onclick="selectView('proj-laptop')">Laptop modulaire</button>
+  <button onclick="selectView('proj-platform')">Plateforme C++</button>
+  <button onclick="selectView('proj-linux')">Infra Linux</button>
+
+  <div class="section-title">CV</div>
+  <button onclick="downloadCV()">Télécharger CV</button>
 
 </aside>
 
 <!-- ================= MAIN ================= -->
 <main class="main">
 
-  <section>
-    <h2>Projets</h2>
-    <div id="projects"></div>
-  </section>
-
-  <section>
-    <h2>Expériences</h2>
-    <div id="exp"></div>
-  </section>
-
-  <section>
-    <h2>CV</h2>
-    <button onclick="downloadCV()">Télécharger CV</button>
-  </section>
+  <div id="content"></div>
 
 </main>
 
@@ -60,7 +63,12 @@
 /* ================= STATE ================= */
 
 let mode = "dev";
-const expanded = {}; // persistant
+let view = "skills";
+
+let showAllExp = false;
+let showAllProj = false;
+
+const expanded = {};
 
 /* ================= DATA ================= */
 
@@ -87,71 +95,78 @@ const skills = [
   {name:"Docker", level:"Confirmé", cat:"tools"},
   {name:"CMake", level:"Confirmé", cat:"tools"},
 
-  {name:"FreeCAD", level:"Intermédiaire", cat:"hardware"}
+  {name:"FreeCAD", level:"Intermédiaire", cat:"hardware"},
+  {name:"Prusa XL", level:"Intermédiaire", cat:"hardware"}
 ];
 
-const categories = [
-  {id:"langages", label:"Langages"},
-  {id:"frameworks", label:"Frameworks"},
-  {id:"env", label:"Environnements"},
-  {id:"systems", label:"Systèmes"},
-  {id:"concepts", label:"Concepts"},
-  {id:"tools", label:"Outils"},
-  {id:"hardware", label:"Hardware"}
-];
-
-/* ================= MODE (FIX IMPORTANT) ================= */
+/* ================= MODE ================= */
 
 function setMode(m){
   mode = m;
 
-  // reset buttons proprement (SANS render global immédiat destructeur)
   document.querySelectorAll(".mode-btn").forEach(b=>{
     b.classList.remove("active");
   });
 
-  document.getElementById("btn-" + m).classList.add("active");
+  document.getElementById("btn-"+m).classList.add("active");
 
-  // render safe
   render();
 }
 
-/* ================= SEARCH ================= */
+/* ================= NAV ================= */
 
-function query(){
-  return document.getElementById("search").value.toLowerCase();
+function selectView(v){
+  view = v;
+  render();
+}
+
+/* toggle sections (exp/proj global) */
+function toggleSection(type){
+  if(type === "exp-all") showAllExp = !showAllExp;
+  if(type === "proj-all") showAllProj = !showAllProj;
+  render();
 }
 
 /* ================= SKILLS ================= */
 
 function toggle(cat){
   expanded[cat] = !expanded[cat];
-  renderSkills();
+  render();
 }
 
-/* ================= RENDER SKILLS ================= */
+/* ================= FILTER ================= */
+
+function filterSkills(list){
+  if(mode === "linux"){
+    return list.filter(s => ["linux","tools","env"].includes(s.cat));
+  }
+  if(mode === "3d"){
+    return list.filter(s => ["hardware","systems"].includes(s.cat));
+  }
+  return list;
+}
+
+/* ================= SKILLS RENDER ================= */
 
 function renderSkills(){
 
-  const el = document.getElementById("skills");
-  const q = query();
-
   let html = "";
+
+  const categories = [...new Set(skills.map(s=>s.cat))];
 
   categories.forEach(cat => {
 
-    const list = skills.filter(s =>
-      s.cat === cat.id &&
-      s.name.toLowerCase().includes(q)
-    );
+    let list = skills.filter(s => s.cat === cat);
+    list = filterSkills(list);
 
-    const isOpen = expanded[cat.id];
+    if(list.length === 0) return;
+
+    const isOpen = expanded[cat];
     const visible = isOpen ? list : list.slice(0,3);
 
     html += `
       <div class="skill-block">
-
-        <div class="skill-title">${cat.label}</div>
+        <div class="skill-title">${cat}</div>
 
         ${visible.map(s => `
           <div class="skill">
@@ -161,34 +176,146 @@ function renderSkills(){
         `).join("")}
 
         ${list.length > 3 ? `
-          <button onclick="toggle('${cat.id}')">
+          <button onclick="toggle('${cat}')">
             ${isOpen ? "Réduire" : "Voir plus"}
           </button>
         ` : ""}
-
       </div>
     `;
   });
 
-  el.innerHTML = html;
+  return html;
 }
 
-/* ================= MAIN CONTENT ================= */
+/* ================= EXP / PROJ LIST STYLE ================= */
 
-function renderProjects(){
-  document.getElementById("projects").innerHTML = `
-    <div class="card">Plateforme C++ distribuée</div>
-    <div class="card">Infra Linux personnelle</div>
-    <div class="card">Laptop modulaire (hardware + CAO)</div>
+function renderExpList(){
+
+  const items = [
+    {
+      id:"defense",
+      title:"Ingénieur embarqué — Défense",
+      desc:"C/C++ critique, Linux embarqué, optimisation, debug bas niveau."
+    },
+    {
+      id:"data",
+      title:"Plateforme distribuée C++",
+      desc:"Réplication temps réel, SQLite, migration Linux, IBM i."
+    },
+    {
+      id:"founder",
+      title:"Fondateur — Hardware system",
+      desc:"Laptop modulaire, CAO FreeCAD, impression 3D Prusa XL."
+    }
+  ];
+
+  const list = showAllExp ? items : [];
+
+  return `
+    <h2>Expériences</h2>
+
+    <button onclick="showAllExp = !showAllExp; render()"> 
+      ${showAllExp ? "Réduire" : "Afficher tout"}
+    </button>
+
+    ${list.map(i=>`
+      <div class="card" onclick="selectView('exp-'+i.id)">
+        <strong>${i.title}</strong>
+        <div class="muted">${i.desc}</div>
+      </div>
+    `).join("")}
   `;
 }
 
-function renderExp(){
-  document.getElementById("exp").innerHTML = `
-    <div class="card">Ingénieur embarqué — Défense</div>
-    <div class="card">Ingénieur C++ — Systèmes distribués</div>
-    <div class="card">Fondateur — Hardware system</div>
+function renderProjList(){
+
+  const items = [
+    {
+      id:"laptop",
+      title:"Laptop modulaire",
+      desc:"Architecture hardware + software complète"
+    },
+    {
+      id:"platform",
+      title:"Plateforme C++",
+      desc:"Systèmes distribués"
+    },
+    {
+      id:"linux",
+      title:"Infrastructure Linux",
+      desc:"Docker, automation, self-hosting"
+    }
+  ];
+
+  const list = showAllProj ? items : [];
+
+  return `
+    <h2>Projets</h2>
+
+    <button onclick="showAllProj = !showAllProj; render()">
+      ${showAllProj ? "Réduire" : "Afficher tout"}
+    </button>
+
+    ${list.map(i=>`
+      <div class="card" onclick="selectView('proj-'+i.id)">
+        <strong>${i.title}</strong>
+        <div class="muted">${i.desc}</div>
+      </div>
+    `).join("")}
   `;
+}
+
+/* ================= CONTENT ================= */
+
+function renderContent(){
+
+  if(view === "skills"){
+    return `
+      <h2>Compétences</h2>
+      ${renderSkills()}
+    `;
+  }
+
+  if(view.startsWith("exp-") && view !== "skills"){
+
+    const map = {
+      "exp-defense": {
+        title:"Ingénieur embarqué — Défense",
+        text:"C/C++ critique, Linux embarqué, debug bas niveau, optimisation performance."
+      },
+      "exp-data": {
+        title:"Plateforme distribuée C++",
+        text:"Réplication temps réel, SQLite, migration Linux, IBM i."
+      },
+      "exp-founder": {
+        title:"Fondateur — Hardware system",
+        text:"Laptop modulaire, CAO FreeCAD, impression 3D Prusa XL."
+      }
+    };
+
+    const e = map[view];
+
+    return `
+      <h2>${e.title}</h2>
+      <p>${e.text}</p>
+    `;
+  }
+
+  if(view.startsWith("proj-")){
+
+    const map = {
+      "proj-laptop": "Laptop modulaire — architecture hardware + software",
+      "proj-platform": "Plateforme C++ distribuée",
+      "proj-linux": "Infrastructure Linux personnelle"
+    };
+
+    return `
+      <h2>Projet</h2>
+      <p>${map[view]}</p>
+    `;
+  }
+
+  return "";
 }
 
 /* ================= CV ================= */
@@ -196,10 +323,8 @@ function renderExp(){
 function downloadCV(){
   const blob = new Blob([
 `Florent Turri
-Ingénieur système logiciel
-
-Mode: ${mode}
-`
+CV
+Mode: ${mode}`
   ], {type:"text/plain"});
 
   const a = document.createElement("a");
@@ -208,15 +333,26 @@ Mode: ${mode}
   a.click();
 }
 
-/* ================= GLOBAL RENDER ================= */
+/* ================= RENDER ================= */
 
 function render(){
-  renderSkills();
-  renderProjects();
-  renderExp();
+
+  const content = renderContent();
+
+  document.getElementById("content").innerHTML = `
+    ${content}
+  `;
+
+  // inject exp/proj lists only in root view if needed
+  if(view === "skills"){
+    document.getElementById("content").innerHTML = `
+      ${content}
+      ${renderExpList()}
+      ${renderProjList()}
+    `;
+  }
 }
 
-/* init */
 render();
 
 </script>
