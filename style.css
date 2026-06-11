@@ -162,3 +162,56 @@ x
   transform: translateY(-1px);
   background: rgba(255, 106, 0, 0.08);
 }
+
+
+/* Smarphone ersponsive */
+
+@media (max-width: 768px) {
+
+  #app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    overflow-x: auto;
+  }
+
+  .top {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    overflow: visible;
+  }
+
+  .identity {
+    display: none; /* optionnel mais recommandé */
+  }
+
+  .section {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .col {
+    flex-direction: row;
+  }
+
+  #search {
+    width: 140px;
+    font-size: 0.8rem;
+  }
+
+  .bottom {
+    display: none; /* CV caché ou déplacé */
+  }
+
+  main {
+    padding: 12px;
+  }
+}
