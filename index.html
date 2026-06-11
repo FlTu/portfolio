@@ -1,129 +1,225 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Florent TURRI – CV</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Florent Turri — Systems Engineer</title>
+<link rel="stylesheet" href="style.css"/>
 </head>
 
 <body>
 
-<!-- HEADER BANNER -->
-<header class="banner">
-  <div class="banner-left">
-    <h1>Florent TURRI</h1>
-    <p>Ingénieur Logiciel Embarqué – C / C++ / Linux</p>
-    <p>Beauchamp, Île-de-France</p>
-    <p><a href="mailto:florentturri@gmail.com"><img src="mail.icon.webp" class="icon"></a> <a href="https://www.linkedin.com/in/florent-turri" target="_blank">LinkedIn</a></p>
-    <p><img src="volant.svg" class="icon"> A & B</p>
-  </div>
-
-  <div class="banner-right">
-  </div>
-</header>
-
 <div class="layout">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar">
 
-    <h2>Compétences</h2>
+  <div class="title">Florent Turri</div>
+  <div class="muted">System Engineer</div>
 
-    <h3>Langages</h3>
-    <ul>
-      <li>C</li><li>C++</li><li>Python</li><li>Java</li><li>Shell</li>
-    </ul>
+  <div class="section-title">Module d’intention</div>
 
-    <h3>Frameworks</h3>
-    <ul>
-      <li>Qt</li><li>GLib</li><li>Boost</li>
-    </ul>
+  <div class="mode">
+    <button id="btn-dev" class="mode-btn active" onclick="setMode('dev')">Dev</button>
+    <button id="btn-linux" class="mode-btn" onclick="setMode('linux')">Linux</button>
+    <button id="btn-3d" class="mode-btn" onclick="setMode('3d')">3D</button>
+  </div>
 
-    <h3>Systèmes</h3>
-    <ul>
-      <li>Linux</li>
-      <li>Linux embarqué</li>
-      <li>IBM i / AS400</li>
-      <li>Centrale inertielle</li>
-      <li>STM32 / Arduino</li>
-      <li>FPGA</li>
-    </ul>
+  <div class="section-title">Compétences</div>
 
-    <h3>Concepts</h3>
-    <ul>
-      <li>Multithreading</li>
-      <li>IPC</li>
-      <li>Réseau</li>
-      <li>Systèmes distribués</li>
-    </ul>
+  <input id="search" placeholder="Rechercher..." oninput="renderSkills()" />
 
-    <h3>Outils</h3>
-    <ul>
-      <li>Git</li>
-      <li>Docker</li>
-      <li>CMake</li>
-      <li>GCC</li>
-    </ul>
+  <div id="skills"></div>
 
-    <h3>Langues</h3>
-    <ul>
-      <li>Français</li>
-      <li>Anglais</li>
-    </ul>
+</aside>
 
-  </aside>
+<!-- ================= MAIN ================= -->
+<main class="main">
 
-  <!-- MAIN CONTENT -->
-  <main class="content">
+  <section>
+    <h2>Projets</h2>
+    <div id="projects"></div>
+  </section>
 
-    <section>
-      <h2>Profil</h2>
-      <p>
-        Ingénieur logiciel embarqué avec 6 années d’expérience en C/C++ sous Linux
-        dans des environnements industriels critiques (défense, systèmes complexes).
-      </p>
-    </section>
+  <section>
+    <h2>Expériences</h2>
+    <div id="exp"></div>
+  </section>
 
-    <section>
-      <h2>Expérience</h2>
+  <section>
+    <h2>CV</h2>
+    <button onclick="downloadCV()">Télécharger CV</button>
+  </section>
 
-      <div class="job">
-        <h3>Fondateur – Conception hardware & système</h3>
-        <span>2024–2026</span>
-        <p>Conception d’un système informatique complet orienté hardware…</p>
-      </div>
-
-      <div class="job">
-        <h3>Ingénieur C++ – Plateforme distribuée</h3>
-        <span>2022–2023</span>
-        <ul>
-          <li>Réplication temps réel</li>
-          <li>Migration Windows → Linux</li>
-          <li>IBM i / AS400</li>
-        </ul>
-      </div>
-
-      <div class="job">
-        <h3>Ingénieur embarqué – Défense</h3>
-        <span>2018–2022</span>
-        <ul>
-          <li>Développement C/C++ critique</li>
-          <li>Linux embarqué</li>
-          <li>Optimisation performance</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section>
-      <h2>Formation</h2>
-      <p>Licence 2 EEA (niveau DEUG)</p>
-    </section>
-
-  </main>
+</main>
 
 </div>
+
+<script>
+
+/* ================= STATE ================= */
+
+let mode = "dev";
+const expanded = {}; // persistant
+
+/* ================= DATA ================= */
+
+const skills = [
+  {name:"C", level:"Expert", cat:"langages"},
+  {name:"C++", level:"Expert", cat:"langages"},
+  {name:"Python", level:"Intermédiaire", cat:"langages"},
+  {name:"Shell / Bash", level:"Expert", cat:"langages"},
+
+  {name:"Qt", level:"Confirmé", cat:"frameworks"},
+  {name:"Boost", level:"Confirmé", cat:"frameworks"},
+
+  {name:"Linux", level:"Expert", cat:"env"},
+  {name:"Windows", level:"Confirmé", cat:"env"},
+
+  {name:"Linux embarqué", level:"Expert", cat:"systems"},
+  {name:"FPGA", level:"Intermédiaire", cat:"systems"},
+
+  {name:"Multithreading", level:"Confirmé", cat:"concepts"},
+  {name:"IPC", level:"Confirmé", cat:"concepts"},
+  {name:"Réseaux", level:"Confirmé", cat:"concepts"},
+
+  {name:"Git", level:"Expert", cat:"tools"},
+  {name:"Docker", level:"Confirmé", cat:"tools"},
+  {name:"CMake", level:"Confirmé", cat:"tools"},
+
+  {name:"FreeCAD", level:"Intermédiaire", cat:"hardware"}
+];
+
+const categories = [
+  {id:"langages", label:"Langages"},
+  {id:"frameworks", label:"Frameworks"},
+  {id:"env", label:"Environnements"},
+  {id:"systems", label:"Systèmes"},
+  {id:"concepts", label:"Concepts"},
+  {id:"tools", label:"Outils"},
+  {id:"hardware", label:"Hardware"}
+];
+
+/* ================= MODE (FIX IMPORTANT) ================= */
+
+function setMode(m){
+  mode = m;
+
+  // reset buttons proprement (SANS render global immédiat destructeur)
+  document.querySelectorAll(".mode-btn").forEach(b=>{
+    b.classList.remove("active");
+  });
+
+  document.getElementById("btn-" + m).classList.add("active");
+
+  // render safe
+  render();
+}
+
+/* ================= SEARCH ================= */
+
+function query(){
+  return document.getElementById("search").value.toLowerCase();
+}
+
+/* ================= SKILLS ================= */
+
+function toggle(cat){
+  expanded[cat] = !expanded[cat];
+  renderSkills();
+}
+
+/* ================= RENDER SKILLS ================= */
+
+function renderSkills(){
+
+  const el = document.getElementById("skills");
+  const q = query();
+
+  let html = "";
+
+  categories.forEach(cat => {
+
+    const list = skills.filter(s =>
+      s.cat === cat.id &&
+      s.name.toLowerCase().includes(q)
+    );
+
+    const isOpen = expanded[cat.id];
+    const visible = isOpen ? list : list.slice(0,3);
+
+    html += `
+      <div class="skill-block">
+
+        <div class="skill-title">${cat.label}</div>
+
+        ${visible.map(s => `
+          <div class="skill">
+            ${s.name}
+            ${isOpen ? `<div class="muted">${s.level}</div>` : ""}
+          </div>
+        `).join("")}
+
+        ${list.length > 3 ? `
+          <button onclick="toggle('${cat.id}')">
+            ${isOpen ? "Réduire" : "Voir plus"}
+          </button>
+        ` : ""}
+
+      </div>
+    `;
+  });
+
+  el.innerHTML = html;
+}
+
+/* ================= MAIN CONTENT ================= */
+
+function renderProjects(){
+  document.getElementById("projects").innerHTML = `
+    <div class="card">Plateforme C++ distribuée</div>
+    <div class="card">Infra Linux personnelle</div>
+    <div class="card">Laptop modulaire (hardware + CAO)</div>
+  `;
+}
+
+function renderExp(){
+  document.getElementById("exp").innerHTML = `
+    <div class="card">Ingénieur embarqué — Défense</div>
+    <div class="card">Ingénieur C++ — Systèmes distribués</div>
+    <div class="card">Fondateur — Hardware system</div>
+  `;
+}
+
+/* ================= CV ================= */
+
+function downloadCV(){
+  const blob = new Blob([
+`Florent Turri
+Ingénieur système logiciel
+
+Mode: ${mode}
+`
+  ], {type:"text/plain"});
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "cv_florent_turri.txt";
+  a.click();
+}
+
+/* ================= GLOBAL RENDER ================= */
+
+function render(){
+  renderSkills();
+  renderProjects();
+  renderExp();
+}
+
+/* init */
+render();
+
+</script>
 
 </body>
 </html>

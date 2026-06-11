@@ -1,0 +1,100 @@
+body{
+  margin:0;
+  background:#0b0c10;
+  color:#e6e6e6;
+  font-family:system-ui;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+  background:#11131a;
+  padding:12px;
+  overflow:auto;
+  border-right:1px solid #1c1f2a;
+}
+
+.title{
+  font-size:16px;
+  font-weight:600;
+}
+
+.muted{
+  font-size:11px;
+  color:#9aa0a6;
+}
+
+.section-title{
+  margin-top:12px;
+  font-size:11px;
+  color:#9aa0a6;
+}
+
+/* INPUT */
+input{
+  width:100%;
+  margin:8px 0;
+  padding:6px;
+  font-size:12px;
+  background:#0f1118;
+  border:1px solid #222;
+  color:white;
+}
+
+/* MAIN */
+.main{
+  padding:16px;
+  overflow:auto;
+}
+
+h2{
+  font-size:14px;
+  margin-bottom:6px;
+}
+
+/* SKILLS */
+.skill-block{
+  margin-bottom:10px;
+  padding:8px;
+  background:#0f1118;
+  border:1px solid #1c1f2a;
+}
+
+.skill-title{
+  font-size:12px;
+  font-weight:600;
+  margin-bottom:6px;
+}
+
+.skill{
+  font-size:12px;
+  padding:2px 0;
+}
+
+/* CARDS */
+.card{
+  background:#11131a;
+  border:1px solid #1c1f2a;
+  padding:8px;
+  margin-bottom:6px;
+  font-size:12px;
+}
+
+/* BUTTONS */
+button{
+  font-size:11px;
+  padding:4px 8px;
+  background:#11131a;
+  border:1px solid #2a2a2a;
+  color:white;
+  cursor:pointer;
+}
+
+button.active{
+  border-color:#ff6a00;
+}
