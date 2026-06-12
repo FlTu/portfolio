@@ -14,7 +14,99 @@ function matchesSearch(item, state) {
   return JSON.stringify(item).toLowerCase().includes(state.search);
 }
 
+function createSectionCard(item, options = {}) {
+
+  const {
+    showPeriod = false,
+    expandable = false
+  } = options;
+
+  const open =
+    state.expandedSections[item.id];
+
+  const card = document.createElement("div");
+  card.className =
+    "card" + (open ? " open" : "");
+
+  // titre
+  const title = document.createElement("div");
+  title.className = "title";
+  title.textContent = item.title;
+
+  card.appendChild(title);
+
+  // période (expériences uniquement)
+  if (showPeriod && item.period) {
+
+    const period = document.createElement("div");
+    period.className = "small";
+    period.textContent = item.period;
+
+    card.appendChild(period);
+  }
+
+  // résumé
+  const summary = document.createElement("div");
+  summary.textContent = item.summary;
+
+  card.appendChild(summary);
+
+  // détails
+  if (expandable) {
+
+    const details =
+      document.createElement("div");
+
+    details.className = "expand";
+
+    details.innerHTML =
+      (item.details || "")
+        .replace(/\n/g, "<br>");
+
+    card.appendChild(details);
+  }
+
+  // compétences
+  card.appendChild(
+    createSkillsBlock(item.skills)
+  );
+
+  // bouton
+  if (expandable) {
+
+    const btn =
+      document.createElement("button");
+
+    btn.textContent =
+      open ? "Réduire" : "Voir plus";
+
+    btn.onclick =
+      () => toggleSection(item.id);
+
+    card.appendChild(btn);
+  }
+
+  return card;
+}
+
 /* ---------------- SKILLS ---------------- */
+
+function createSkillsBlock(skills = []) {
+
+  const block = document.createElement("div");
+  block.className = "skill-grid-mini";
+
+  skills.forEach(skill => {
+
+    const tag = document.createElement("span");
+    tag.className = "skill-mini";
+    tag.textContent = skill;
+
+    block.appendChild(tag);
+  });
+
+  return block;
+}
 
 function renderSkills(state) {
   const root = document.getElementById("content");
@@ -57,216 +149,98 @@ function renderSkills(state) {
   });
 }
 
-/* ---------------- EXPERIENCES ---------------- */
+/* ---------------- SECTIONS ---------------- */
 
-function renderExperiences(state) {
-  const root = document.getElementById("content");
-  clear(root);
+function renderSection(root, state, config) {
 
-    // Parcourt tous les experiences correspondant aux filtres actifs
-    // (mode sélectionné + texte recherché)
-    DATA.experiences
-	.filter(e => matchesMode(e, state) && matchesSearch(e, state))
-	.forEach(exp => {
-	    
-            // État d'expansion de l'experience (Voir plus / Réduire)
-	    const open = state.expandedExp[exp.id];
-	    
-            // Card principale du projet
-	    const card = document.createElement("div");
-	    card.className = "card" + (open ? " open" : "");
-	    
-            // Titre du projet
-	    const title = document.createElement("div");
-	    title.className = "title";
-	    title.textContent = exp.title;
-	    
-            // Champs de durée de l'experience
-	    const period = document.createElement("div");
-	    period.className = "small";
-	    period.textContent = exp.period;
-	    
-            // Résumé court affiché en permanence
-	    const summary = document.createElement("div");
-	    summary.textContent = exp.summary;
-	    
-            // Bouton d'expansion/repli
-	    const btn = document.createElement("button");
-	    btn.textContent = open ? "Réduire" : "Voir plus";
-	    btn.onclick = () => toggleExp(exp.id);
-	    
-            // Description détaillée
-            // Conversion des retours à la ligne en <br>
-	    const details = document.createElement("div");
-	    details.className = "expand";
-	    details.innerHTML = (exp.details || "").replace(/\n/g, "<br>");
+  const {
+    title,
+    items,
+    showPeriod = false,
+    expandable = false
+  } = config;
 
-            // Bloc des compétences associées à l'experience
-	    const skillsBlock = document.createElement("div");
-	    skillsBlock.className = "skill-grid-mini";
-	    
-            // Création d'un badge par compétence
-	    (exp.skills || []).forEach(s => {
-		const tag = document.createElement("span");
-		tag.className = "skill-mini";
-		tag.textContent = s;
-		skillsBlock.appendChild(tag);
-	    });
-	    
-            // Bloc des compétences associées à l'experience
-	    card.appendChild(title);
-	    card.appendChild(period);
-	    card.appendChild(summary);
-            card.appendChild(details);
-            card.appendChild(skillsBlock);
-	    card.appendChild(btn);
-	    
+  const section =
+    document.createElement("div");
 
-	    root.appendChild(card);
-	});
+  if (title) {
+
+    const heading =
+      document.createElement("h2");
+
+    heading.textContent = title;
+
+    section.appendChild(heading);
+  }
+
+  items
+    .filter(item =>
+      matchesMode(item, state)
+      && matchesSearch(item, state)
+    )
+    .forEach(item => {
+
+      section.appendChild(
+        createSectionCard(item, {
+          showPeriod,
+          expandable
+        })
+      );
+    });
+
+  root.appendChild(section);
 }
-/* ---------------- PROJECTS ---------------- */
-
-function renderProjects(state) {
-  const root = document.getElementById("content");
-  clear(root);
-
-
-    // Parcourt tous les projets correspondant aux filtres actifs
-    // (mode sélectionné + texte recherché)
-    DATA.projects
-	.filter(p => matchesMode(p, state) && matchesSearch(p, state))
-	.forEach(proj => {
-	    
-            // État d'expansion du projet (Voir plus / Réduire)
-            const open = state.expandedProj[proj.id];
-
-            // Card principale du projet
-            const card = document.createElement("div");
-            card.className = "card" + (open ? " open" : "");
-	    
-            // Titre du projet
-            const title = document.createElement("div");
-            title.className = "title";
-            title.textContent = proj.title;
-
-            // Résumé court affiché en permanence
-            const summary = document.createElement("div");
-            summary.textContent = proj.summary;
-	    
-            // Bouton d'expansion/repli
-            const btn = document.createElement("button");
-            btn.textContent = open ? "Réduire" : "Voir plus";
-            btn.onclick = () => toggleProj(proj.id);
-	    
-            // Description détaillée
-            // Conversion des retours à la ligne en <br>
-            const details = document.createElement("div");
-            details.className = "expand";
-            details.innerHTML = (proj.details || "").replace(/\n/g, "<br>");
-	    
-            // Bloc des compétences associées au projet
-            const skillsBlock = document.createElement("div");
-            skillsBlock.className = "skill-grid-mini";
-
-            // Création d'un badge par compétence
-            (proj.skills || []).forEach(s => {
-		const tag = document.createElement("span");
-		tag.className = "skill-mini";
-		tag.textContent = s;
-		skillsBlock.appendChild(tag);
-            });
-	    
-            // Construction finale de la card
-            card.appendChild(title);
-            card.appendChild(summary);
-            card.appendChild(details);
-            card.appendChild(skillsBlock);
-            card.appendChild(btn);
-	    
-            // Insertion dans la zone principale
-            root.appendChild(card);
-	});
-}
-
-
-/* ---------------- EXPERIENCES & PROJECTS ---------------- */
 
 function renderOverview(state) {
 
-  const root = document.getElementById("content");
+  const root =
+    document.getElementById("content");
 
-  // EXPERIENCES
-  const expSection = document.createElement("div");
-  expSection.innerHTML = `<h2>Expériences</h2>`;
+  clear(root);
 
-  DATA.experiences
-    .filter(e => matchesMode(e, state))
-    .forEach(exp => {
+  renderSection(root, state, {
+    title: "Expériences",
+    items: DATA.experiences,
+      showPeriod: true,
+    expandable: true
+  });
 
-      const card = document.createElement("div");
-      card.className = "card";
+  renderSection(root, state, {
+    title: "Projets",
+      items: DATA.projects,
+      expandable: true
+  });
+}
 
-      const title = document.createElement("div");
-      title.textContent = exp.title;
+/* ---------------- EXPERIENCES ---------------- */
 
-      const summary = document.createElement("div");
-      summary.textContent = exp.summary;
+function renderExperiences(state) {
 
-      // skills associés (IMPORTANT)
-      const skills = document.createElement("div");
-      skills.className = "skill-grid-mini";
+  const root =
+    document.getElementById("content");
 
-      (exp.skills || []).forEach(s => {
-        const tag = document.createElement("span");
-        tag.className = "skill-mini";
-        tag.textContent = s;
-        skills.appendChild(tag);
-      });
+  clear(root);
 
-      card.appendChild(title);
-      card.appendChild(summary);
-      card.appendChild(skills);
+  renderSection(root, state, {
+    items: DATA.experiences,
+    showPeriod: true,
+    expandable: true
+  });
+}
 
-      expSection.appendChild(card);
-    });
+/* ---------------- PROJECTS ---------------- */
 
-  // PROJECTS
-  const projSection = document.createElement("div");
-  projSection.innerHTML = `<h2>Projets</h2>`;
+function renderProjects(state) {
 
-  DATA.projects
-    .filter(p => matchesMode(p, state))
-    .forEach(proj => {
+  const root =
+    document.getElementById("content");
 
-      const card = document.createElement("div");
-      card.className = "card";
+  clear(root);
 
-      const title = document.createElement("div");
-      title.textContent = proj.title;
-
-      const summary = document.createElement("div");
-      summary.textContent = proj.summary;
-
-      const skills = document.createElement("div");
-      skills.className = "skill-grid-mini";
-
-      (proj.skills || []).forEach(s => {
-        const tag = document.createElement("span");
-        tag.className = "skill-mini";
-        tag.textContent = s;
-        skills.appendChild(tag);
-      });
-
-      card.appendChild(title);
-      card.appendChild(summary);
-      card.appendChild(skills);
-
-      projSection.appendChild(card);
-    });
-
-  root.appendChild(expSection);
-  root.appendChild(projSection);
+  renderSection(root, state, {
+    items: DATA.projects,
+    expandable: true
+  });
 }
 
 /* ---------------- ROUTER ---------------- */

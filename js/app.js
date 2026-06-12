@@ -3,8 +3,7 @@ state = {
   view: "skills",
   search: "",
   expandedSkills: {},
-  expandedExp: {},
-  expandedProj: {}
+  expandedSections: {}
 };
 
 function setMode(mode) {
@@ -27,17 +26,12 @@ function toggleSkill(cat) {
   render(state);
 }
 
-function toggleExp(id) {
-  state.expandedExp[id] = !state.expandedExp[id];
+function toggleSection(id) {
+  state.expandedSections[id] =
+    !state.expandedSections[id];
+
   render(state);
 }
-
-function toggleProj(id) {
-  state.expandedProj[id] = !state.expandedProj[id];
-  render(state);
-}
-
-
 function updateSidebarState() {
 
   document.querySelectorAll("[data-mode]").forEach(btn => {
@@ -53,6 +47,6 @@ function updateSidebarState() {
       btn.dataset.view === state.view
     );
   });
-}
+}x
 /* INIT */
 render(state);
