@@ -63,53 +63,67 @@ function renderExperiences(state) {
   const root = document.getElementById("content");
   clear(root);
 
-  DATA.experiences
-    .filter(e => matchesMode(e, state) && matchesSearch(e, state))
-    .forEach(exp => {
+    // Parcourt tous les experiences correspondant aux filtres actifs
+    // (mode sélectionné + texte recherché)
+    DATA.experiences
+	.filter(e => matchesMode(e, state) && matchesSearch(e, state))
+	.forEach(exp => {
+	    
+            // État d'expansion de l'experience (Voir plus / Réduire)
+	    const open = state.expandedExp[exp.id];
+	    
+            // Card principale du projet
+	    const card = document.createElement("div");
+	    card.className = "card" + (open ? " open" : "");
+	    
+            // Titre du projet
+	    const title = document.createElement("div");
+	    title.className = "title";
+	    title.textContent = exp.title;
+	    
+            // Champs de durée de l'experience
+	    const period = document.createElement("div");
+	    period.className = "small";
+	    period.textContent = exp.period;
+	    
+            // Résumé court affiché en permanence
+	    const summary = document.createElement("div");
+	    summary.textContent = exp.summary;
+	    
+            // Bouton d'expansion/repli
+	    const btn = document.createElement("button");
+	    btn.textContent = open ? "Réduire" : "Voir plus";
+	    btn.onclick = () => toggleExp(exp.id);
+	    
+            // Description détaillée
+            // Conversion des retours à la ligne en <br>
+	    const details = document.createElement("div");
+	    details.className = "expand";
+	    details.innerHTML = (exp.details || "").replace(/\n/g, "<br>");
 
-      const open = state.expandedExp[exp.id];
+            // Bloc des compétences associées à l'experience
+	    const skillsBlock = document.createElement("div");
+	    skillsBlock.className = "skill-grid-mini";
+	    
+            // Création d'un badge par compétence
+	    (exp.skills || []).forEach(s => {
+		const tag = document.createElement("span");
+		tag.className = "skill-mini";
+		tag.textContent = s;
+		skillsBlock.appendChild(tag);
+	    });
+	    
+            // Bloc des compétences associées à l'experience
+	    card.appendChild(title);
+	    card.appendChild(period);
+	    card.appendChild(summary);
+            card.appendChild(details);
+            card.appendChild(skillsBlock);
+	    card.appendChild(btn);
+	    
 
-      const card = document.createElement("div");
-      card.className = "card" + (open ? " open" : "");
-
-      const title = document.createElement("div");
-      title.className = "title";
-      title.textContent = exp.title;
-
-      const period = document.createElement("div");
-      period.className = "small";
-      period.textContent = exp.period;
-
-      const summary = document.createElement("div");
-      summary.textContent = exp.summary;
-
-      const btn = document.createElement("button");
-      btn.textContent = open ? "Réduire" : "Voir plus";
-      btn.onclick = () => toggleExp(exp.id);
-
-      const details = document.createElement("div");
-      details.className = "expand";
-	details.innerHTML = (exp.details || "").replace(/\n/g, "<br>");
-      const skillsBlock = document.createElement("div");
-      skillsBlock.className = "skill-grid-mini";
-
-      (exp.skills || []).forEach(s => {
-        const tag = document.createElement("span");
-        tag.className = "skill-mini";
-        tag.textContent = s;
-        skillsBlock.appendChild(tag);
-      });
-
-      card.appendChild(title);
-      card.appendChild(period);
-      card.appendChild(summary);
-        card.appendChild(details);
-        card.appendChild(skillsBlock);
-      card.appendChild(btn);
-
-
-      root.appendChild(card);
-    });
+	    root.appendChild(card);
+	});
 }
 /* ---------------- PROJECTS ---------------- */
 
@@ -117,81 +131,66 @@ function renderProjects(state) {
   const root = document.getElementById("content");
   clear(root);
 
-  DATA.projects
-    .filter(p => matchesMode(p, state) && matchesSearch(p, state))
-    .forEach(proj => {
 
+    // Parcourt tous les projets correspondant aux filtres actifs
+    // (mode sélectionné + texte recherché)
+    DATA.projects
+	.filter(p => matchesMode(p, state) && matchesSearch(p, state))
+	.forEach(proj => {
+	    
+            // État d'expansion du projet (Voir plus / Réduire)
+            const open = state.expandedProj[proj.id];
 
+            // Card principale du projet
+            const card = document.createElement("div");
+            card.className = "card" + (open ? " open" : "");
+	    
+            // Titre du projet
+            const title = document.createElement("div");
+            title.className = "title";
+            title.textContent = proj.title;
 
+            // Résumé court affiché en permanence
+            const summary = document.createElement("div");
+            summary.textContent = proj.summary;
+	    
+            // Bouton d'expansion/repli
+            const btn = document.createElement("button");
+            btn.textContent = open ? "Réduire" : "Voir plus";
+            btn.onclick = () => toggleProj(proj.id);
+	    
+            // Description détaillée
+            // Conversion des retours à la ligne en <br>
+            const details = document.createElement("div");
+            details.className = "expand";
+            details.innerHTML = (proj.details || "").replace(/\n/g, "<br>");
+	    
+            // Bloc des compétences associées au projet
+            const skillsBlock = document.createElement("div");
+            skillsBlock.className = "skill-grid-mini";
 
-	const open = state.expandedProj[proj.id];
-
-	const card = document.createElement("div");
-	card.className = "card" + (open ? " open" : "");
-
-
-	
-      const title = document.createElement("div");
-      title.className = "title";
-      title.textContent = proj.title;
-
-      const summary = document.createElement("div");
-      summary.textContent = proj.summary;
-
-      const btn = document.createElement("button");
-      btn.textContent = open ? "Réduire" : "Voir plus";
-      btn.onclick = () => toggleProj(proj.id);
-
-      const details = document.createElement("div");
-      details.className = "expand";
-	details.innerHTML = (proj.details || "").replace(/\n/g, "<br>");
-      const skillsBlock = document.createElement("div");
-      skillsBlock.className = "skill-grid-mini";
-
-      (proj.skills || []).forEach(s => {
-        const tag = document.createElement("span");
-        tag.className = "skill-mini";
-        tag.textContent = s;
-        skillsBlock.appendChild(tag);
-      });
-
-      card.appendChild(title);
-      card.appendChild(summary);
-        card.appendChild(details);
-        card.appendChild(skillsBlock);
-      card.appendChild(btn);
-
-
-	root.appendChild(card);
-    });
-}
-/* ---------------- ROUTER ---------------- */
-
-function render(state) {
-
-  const root = document.getElementById("content");
-  root.innerHTML = "";
-
-  switch (state.view) {
-
-    case "skills":
-      renderSkills(state);
-      break;
-
-    case "experiences":
-      renderExperiences(state);
-      break;
-
-    case "projects":
-      renderProjects(state);
-      break;
-
-    case "overview":
-      renderOverview(state);
-      break;
-  }
+            // Création d'un badge par compétence
+            (proj.skills || []).forEach(s => {
+		const tag = document.createElement("span");
+		tag.className = "skill-mini";
+		tag.textContent = s;
+		skillsBlock.appendChild(tag);
+            });
+	    
+            // Construction finale de la card
+            card.appendChild(title);
+            card.appendChild(summary);
+            card.appendChild(details);
+            card.appendChild(skillsBlock);
+            card.appendChild(btn);
+	    
+            // Insertion dans la zone principale
+            root.appendChild(card);
+	});
 }
 
+
+/* ---------------- EXPERIENCES & PROJECTS ---------------- */
 
 function renderOverview(state) {
 
@@ -269,3 +268,31 @@ function renderOverview(state) {
   root.appendChild(expSection);
   root.appendChild(projSection);
 }
+
+/* ---------------- ROUTER ---------------- */
+
+function render(state) {
+
+  const root = document.getElementById("content");
+  root.innerHTML = "";
+
+  switch (state.view) {
+
+    case "skills":
+      renderSkills(state);
+      break;
+
+    case "experiences":
+      renderExperiences(state);
+      break;
+
+    case "projects":
+      renderProjects(state);
+      break;
+
+    case "overview":
+      renderOverview(state);
+      break;
+  }
+}
+
